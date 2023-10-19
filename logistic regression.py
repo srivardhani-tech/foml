@@ -1,36 +1,40 @@
-import numpy as np
+# Step 1: Import the required modules
+from sklearn.datasets import make_classification
+from matplotlib import pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 import pandas as pd
 
-#"Importing the dataset
-# divide the dataset into concepts and targets. Store the concepts into X and targets into y.
-dataset = pd.read_csv("C:\\Users\\Public\\Downloads\\foml\\breastcancer.csv")
-X = dataset.iloc[:, :-1].values
-y = dataset.iloc[:, -1].values
+# Step 2: Generate the dataset
+x, y = make_classification(
+    n_samples=100,
+    n_features=1,
+    n_classes=2,
+    n_clusters_per_class=1,
+    flip_y=0.03,
+    n_informative=1,
+    n_redundant=0,
+    n_repeated=0
+)
+print(y)
 
-#Splitting the dataset into the Training set and Test  
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.30, random_state = 2)
+# Step 3: visualize the data
+plt.scatter(x, y, c=y, cmap='rainbow')
+plt.title('Scatter Plot of Logistic Regression')
+plt.show()
 
-#Feature Scaling
+# Step 4: Split the dataset
+x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=1)
 
-from sklearn.preprocessing import StandardScaler
-sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
-X_test = sc.transform(X_test)
+x_train.shape
 
-from sklearn.linear_model import LogisticRegression
-classifier = LogisticRegression(random_state = 0)
-classifier.fit(X_train, y_train)
-#Logistic Regression (LR) classifier model
+# Step 4: Perform Logistic Regression
+log_reg = LogisticRegression()
+log_reg.fit(x_train, y_train)
 
-#Display the results (confusion matrix and accuracy)
+# Step 5: Make prediction using the model
+y_pred = log_reg.predict(x_test)
 
-from sklearn.metrics import confusion_matrix, accuracy_score
-y_pred = classifier.predict(X_test)
-cm = confusion_matrix(y_test, y_pred)
-print(cm)
-print('Accuracy Score:confusion matrix')
-accuracy_score(y_test, y_pred)
-# Calculate the accuracy of the model
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
+# Step 6: Display the Confusion Matrix
+confusion_matrix(y_test, y_pred)
